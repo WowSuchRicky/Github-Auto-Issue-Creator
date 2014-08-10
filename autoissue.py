@@ -87,11 +87,9 @@ def generateIssue(issueText, lineNumber, fileName):
 	endIndex = issueText.index("ODOT")
 	return Issue(issueText[startIndex:endIndex], lineNumber, fileName, label)
 
-def getIssueList(dir):
+#returns the list of issues in a specific directory (and all children), or "." by default
+def getIssueList(dir = "."):
 	#local variables
-	if dir is None
-		dir = "."
-
 	issueList = []
 	files =	getFiles(dir)
 
