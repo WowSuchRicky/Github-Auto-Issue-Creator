@@ -8,15 +8,14 @@ class Issue:
 		self.issue = issueContent
 		self.line = lineNumber
 
-#local variables:
-issueList = []
-lineNumber = 1
 
-#List all sub-directories and files
-iss = Issue("", "")
-for d in listdir("test"):
-	d = "test/" + d
-	with open(d) as f:
+#Function which takes a file and returns a list of Issues
+def lookForIssue(file):	#reads through an input file and returns a list of issues to be posted to github repo
+	#local variables
+	lineNumber = 1
+	issueList = []
+
+	with open(file) as f:
 		print "Opened: ", d
 		for line in f:
 			if "TODO" in line:
@@ -24,6 +23,19 @@ for d in listdir("test"):
 				issueList.append(iss)
 				lineNumber = 0;
 			lineNumber = lineNumber + 1
+
+	return issueList
+
+
+
+#local variables
+issueList = []
+
+#List all sub-directories and files
+for d in listdir("test"):
+	d = "test/" + d
+	for issue in lookForIssue(d):
+		issueList.append(issue)
 
 print "\n\n\n\n ISSUES TO BE ADDED TO THE REPO:"
 for issue in issueList:
