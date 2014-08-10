@@ -87,11 +87,15 @@ def generateIssue(issueText, lineNumber, fileName):
 	endIndex = issueText.index("ODOT")
 	return Issue(issueText[startIndex:endIndex], lineNumber, fileName, label)
 
-
-def main():
+def getIssueList(dir):
 	#local variables
+	if dir is None
+		dir = "."
+
 	issueList = []
-	files =	getFiles(".")
+	files =	getFiles(dir)
+
+
 	for file in files:
 		for issue in lookForIssue(file):
 			issueList.append(issue)
@@ -104,6 +108,9 @@ def main():
 
 
 	return issueList
+
+def main():
+	issueList = getIssueList();
 
 if __name__ == "__main__":
     main()
