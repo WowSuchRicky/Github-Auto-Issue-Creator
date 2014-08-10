@@ -6,11 +6,12 @@ blacklist = [".git", "autoissue.py", "README"] #blacklist for file/dir names
 
 #issue class, just has the content and lineNumber fields right now.
 class Issue:
-	def __init__(self, issueContent, lineNumber, fileName):
+	def __init__(self, issueContent, lineNumber, fileName, label):
 		self.data = []
 		self.issue = issueContent
 		self.line = lineNumber
 		self.fileName = fileName
+		self.label = label
 
 
 #Function that gets all of the files (and folders) in a folder
@@ -59,7 +60,7 @@ def lookForIssue(file):	#reads through an input file and returns a list of issue
 		print "Searching for TODOs in: ", file
 		for line in f:
 			if "TODO" in line:
-				iss = Issue(parseString(line), lineNumber, file)
+				iss = generateIssue(line, lineNumber, file)
 				issueList.append(iss)
 				lineNumber = 0;
 
@@ -68,11 +69,23 @@ def lookForIssue(file):	#reads through an input file and returns a list of issue
 	return issueList
 
 
-#function that parses out the portion enclosed in the TODO ... ODOT in the string
-def parseString(string):
-	startIndex = string.index("TODO") + 6 #+6 is to account for "TODO: "
-	endIndex = string.index("ODOT")
-	return string[startIndex:endIndex]
+#function that parses out the portion enclosed in the TODO ... ODOT in the string and returns the completed obj
+def generateIssue(issueText, lineNumber, fileName):
+	args = ["@label"]
+	label = ""
+
+	#search for any sort of arguments in the todo
+	splitString = issueText.split(" ") #tokenize the input string to try to find args
+	for arg in args:
+		for token in splitString:
+			if arg in token:
+				label = token.split(":")[1]
+				print "arg found! ", arg, ": ", label
+
+
+	startIndex = issueText.index("TODO") + 6 #+6 is to account for "TODO: "
+	endIndex = issueText.index("ODOT")
+	return Issue(issueText[startIndex:endIndex], lineNumber, fileName, label)
 
 
 def unitTest():
@@ -87,7 +100,7 @@ def unitTest():
 
 	print "\n\n\n\n ISSUES TO BE ADDED TO THE REPO:"
 	for issue in issueList:
-		print issue.issue, " in file: ", issue.fileName, "on line: ", issue.line
+		print issue.issue, " in file: ", issue.fileName, "on line: ", issue.line, " with label: ", issue.label
 
 
 
