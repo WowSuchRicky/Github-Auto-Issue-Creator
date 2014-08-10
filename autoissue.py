@@ -88,7 +88,7 @@ def generateIssue(issueText, lineNumber, fileName):
 	return Issue(issueText[startIndex:endIndex], lineNumber, fileName, label)
 
 
-def unitTest():
+def main():
 	#local variables
 	issueList = []
 	files =	getFiles(".")
@@ -103,5 +103,7 @@ def unitTest():
 		print issue.issue, " in file: ", issue.fileName, "on line: ", issue.line, " with label: ", issue.label
 
 
+	return issueList
 
-unitTest()
+if __name__ == "__main__":
+    main()
