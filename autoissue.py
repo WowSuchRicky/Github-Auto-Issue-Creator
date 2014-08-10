@@ -43,6 +43,8 @@ def getFiles(directory):
 			else:
 				print "Excluded file (blacklist): ", d
 
+
+
 	#return list of actual files to open
 	return fileList
 
@@ -53,16 +55,15 @@ def lookForIssue(file):	#reads through an input file and returns a list of issue
 	lineNumber = 1
 	issueList = []
 
-	if not ".git" in file:
-		with open(file) as f:
-			print "Searching for TODOs in: ", file
-			for line in f:
-				if "TODO" in line:
-					iss = Issue(parseString(line), lineNumber, file)
-					issueList.append(iss)
-					lineNumber = 0;
+	with open(file) as f:
+		print "Searching for TODOs in: ", file
+		for line in f:
+			if "TODO" in line:
+				iss = Issue(parseString(line), lineNumber, file)
+				issueList.append(iss)
+				lineNumber = 0;
 
-				lineNumber += 1
+			lineNumber += 1
 
 	return issueList
 
