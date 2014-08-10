@@ -53,7 +53,7 @@ def lookForIssue(file):	#reads through an input file and returns a list of issue
 def unitTest():
 	#local variables
 	issueList = []
-	files =	getFiles("test")
+	files =	getFiles(".")
 	for file in files:
 		for issue in lookForIssue(file):
 			issueList.append(issue)
