@@ -26,7 +26,8 @@ def getFiles(directory):
 
 		#otherwise the file is indeed a file
 		else:
-			fileList.append(d)
+			if not "main.py" in d:
+				fileList.append(d)
 
 	#return list of actual files to open
 	return fileList
@@ -42,12 +43,19 @@ def lookForIssue(file):	#reads through an input file and returns a list of issue
 		print "Opened: ", file
 		for line in f:
 			if "TODO" in line:
-				iss = Issue(line, lineNumber)
+				iss = Issue(parseString(line), lineNumber)
 				issueList.append(iss)
 				lineNumber = 0;
 			lineNumber += 1
 
 	return issueList
+
+
+#function that parses out the portion enclosed in the TODO ... ODOT in the string
+def parseString(string):
+	startIndex = string.index("TODO") + 6 #+6 is to account for "TODO: "
+	endIndex = string.index("ODOT")
+	return string[startIndex:endIndex]
 
 
 def unitTest():
