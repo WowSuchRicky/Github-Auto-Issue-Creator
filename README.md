@@ -3,7 +3,7 @@ If you have lines of code in your program that have a portion such as: "//TODO: 
 This seems to work fine on Unix-based OSs (Linux, OS X, etc..) however, not quite on Windows.
 To get it to work on Windows:
 
-1. Download pip (https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py) and run it (python get-pip.py)
+1. Download pip (We've included a copy in /setup if you'd like, but we still recommend downloading the latest) (https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py) and run it (python get-pip.py)
 
 2. Run "C:\Python27\Scripts\pip.exe install requests"
 
