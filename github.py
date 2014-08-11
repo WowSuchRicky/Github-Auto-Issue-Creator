@@ -12,14 +12,14 @@ def getValue(key):
 	with open(SETTINGS) as f:
 		for line in f:
 			if key in line:
-				return line.split(" ")[1]
+				return line.split(" ", 1)[1]
 
 	return ""
 		
 def addProperty(key, value):
 	with open(SETTINGS, "a") as sett:
-		sett.write(key, " ", value "\n")
+		sett.write(key + " " + value + "\n")
 		return True
 
-	return False #something bad happenesd
+	return False #something bad happened
 
