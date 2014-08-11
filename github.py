@@ -99,8 +99,9 @@ def createIssue(issue):
 	r = requests.post(url, data = json.dumps(data), headers = HEADERS)
 
 	if r.ok:
+		print "SUCCESS"
 		j = json.loads(r.text or r.content)
-		print json.dumps(j, indent = 4)
+		return j['number']
 	else:
 		print "Not OK"
 		print r.text
