@@ -14,3 +14,6 @@ Searches through all current files and subfolders for these lines, and creates a
 Simply run the tool (python autoissue.py) and it'll do all of the work for you, after prompting you for your Github Credentials (which will request a token that will be saved, so you shouldn't have to enter your info more than once).
 
 Feel free to submit pull requests/issues/etc. or contact us.
+
+
+*THIS IS THE EXPERIMENTAL VERSION! THIS COULD WORK GREAT, OR NOT WORK AT ALL.*
