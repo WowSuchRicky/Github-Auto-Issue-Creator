@@ -74,7 +74,7 @@ def lookForIssue(file):	#reads through an input file and returns a list of issue
 def generateIssue(issueText, lineNumber, fileName):
 	args = ["@title", "@label"]
 	label = None
-	title = "Rename Issue"
+	title = None
 
 	#search for any sort of arguments in the todo
 	splitString = issueText.split(" ") #tokenize the input string to try to find args
