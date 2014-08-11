@@ -15,4 +15,5 @@ Simply copy (autoissue.py and github.py) and run the tool (python autoissue.py) 
 
 Feel free to submit pull requests/issues/etc. or contact us.
 
+*THIS IS THE EXPERIMENTAL VERSION! THIS COULD WORK GREAT, OR NOT WORK AT ALL.*
 Unless specified otherwise, the MIT License (http://opensource.org/licenses/MIT) applies to all of this code. By executing or even downloading the source code, you're agreeing to comply with all MIT license specifics. 

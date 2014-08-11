@@ -1,9 +1,12 @@
 #!/usr/bin/python
 #from os import listdir, path
-import os
+import os, argparse
 from github import createIssues
 
+#global vars
 blacklist = [".git", "autoissue.py", "github.py", "README"] #blacklist for file/dir names
+startToken = "TODO"
+endToken = "ODOT"
 
 #issue class, just has the content and lineNumber fields right now.
 class Issue:
@@ -59,9 +62,9 @@ def lookForIssue(file):	#reads through an input file and returns a list of issue
 	issueList = []
 
 	with open(file) as f:
-		print "Searching for TODOs in: ", file
+		print "Searching for ", startToken, " in: ", file
 		for line in f:
-			if "TODO" in line:
+			if startToken in line:
 				iss = generateIssue(line, lineNumber, file)
 				issueList.append(iss)
 				lineNumber = 0;
@@ -90,8 +93,8 @@ def generateIssue(issueText, lineNumber, fileName):
 					print "arg found! ", arg, ": ", label
 
 
-	startIndex = issueText.index("TODO") + 6 #+6 is to account for "TODO: "
-	endIndex = issueText.index("ODOT")
+	startIndex = issueText.index(startToken) + 6 #+6 is to account for "TODO: "
+	endIndex = issueText.index(endToken)
 	return Issue(title, issueText[startIndex:endIndex], lineNumber, fileName, label)
 
 #returns the list of issues in a specific directory (and all children), or "." by default
@@ -115,6 +118,25 @@ def getIssueList(dir = "."):
 	return issueList
 
 def main():
+	parser = argparse.ArgumentParser(description="Auto-Issue-Creator argument parser")
+	parser.add_argument("-s", "--start", help="the token that begins the TODO: (ie. 'TODO')")
+	parser.add_argument("-e", "--end", help="the token that ends the TODO: (ie. 'ODOT')")
+	args = vars(parser.parse_args())
+
+	if args["start"] != None:
+		global startToken #set scope
+		startToken = args["start"]
+		print "Starting token set as: ", startToken
+	else:
+		print "Using default starting token: ", startToken
+
+	if args["end"] != None:
+		global endToken #set scope
+		endToken = args["end"]
+		print "Ending token set as: ", endToken
+	else:
+		print "Using default ending token: ", endToken
+
 	issueList = getIssueList()
 	createIssues(issueList)
 
