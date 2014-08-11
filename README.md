@@ -5,7 +5,7 @@ To get it to work on Windows:
 
 1. Download pip (https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py) and run it (python get-pip.py)
 
-2. Run C:\Python27\Scripts\pip.exe install requests
+2. Run "C:\Python27\Scripts\pip.exe install requests"
 
 3. It should now work fine! Feel free to proceed to the rest of the instructions.
 
