@@ -1,6 +1,7 @@
 #!/usr/bin/python
 #from os import listdir, path
 import os
+from github import createIssues
 
 blacklist = [".git", "autoissue.py", "README"] #blacklist for file/dir names
 
@@ -72,7 +73,7 @@ def lookForIssue(file):	#reads through an input file and returns a list of issue
 #function that parses out the portion enclosed in the TODO ... ODOT in the string and returns the completed obj
 def generateIssue(issueText, lineNumber, fileName):
 	args = ["@label"]
-	label = ""
+	label = None
 
 	#search for any sort of arguments in the todo
 	splitString = issueText.split(" ") #tokenize the input string to try to find args
@@ -108,7 +109,8 @@ def getIssueList(dir = "."):
 	return issueList
 
 def main():
-	issueList = getIssueList();
+	issueList = getIssueList()
+	createIssues(issueList)
 
 if __name__ == "__main__":
     main()
