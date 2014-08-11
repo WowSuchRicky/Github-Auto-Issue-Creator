@@ -38,7 +38,7 @@ def getValue(key):
 	return None
 		
 def addProperty(key, value):
-	with open(SETTINGS, "a") as sett:
+	with open(SETTINGS, "a+") as sett:
 		sett.write(key + " " + value + "\n")
 		return True
 
