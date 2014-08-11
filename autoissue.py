@@ -3,12 +3,13 @@
 import os
 from github import createIssues
 
-blacklist = [".git", "autoissue.py", "README"] #blacklist for file/dir names
+blacklist = [".git", "autoissue.py", "github.py", "README"] #blacklist for file/dir names
 
 #issue class, just has the content and lineNumber fields right now.
 class Issue:
-	def __init__(self, issueContent, lineNumber, fileName, label):
+	def __init__(self, title, issueContent, lineNumber, fileName, label):
 		self.data = []
+		self.title = title
 		self.issue = issueContent
 		self.line = lineNumber
 		self.fileName = fileName
@@ -72,21 +73,26 @@ def lookForIssue(file):	#reads through an input file and returns a list of issue
 
 #function that parses out the portion enclosed in the TODO ... ODOT in the string and returns the completed obj
 def generateIssue(issueText, lineNumber, fileName):
-	args = ["@label"]
+	args = ["@title", "@label"]
 	label = None
+	title = None
 
 	#search for any sort of arguments in the todo
 	splitString = issueText.split(" ") #tokenize the input string to try to find args
 	for arg in args:
 		for token in splitString:
 			if arg in token:
-				label = token.split(":")[1]
-				print "arg found! ", arg, ": ", label
+				if arg is "@title":
+					title = token.split(":")[1]
+					print "arg found! ", arg, ": ", title
+				else:
+					label = token.split(":")[1]
+					print "arg found! ", arg, ": ", label
 
 
 	startIndex = issueText.index("TODO") + 6 #+6 is to account for "TODO: "
 	endIndex = issueText.index("ODOT")
-	return Issue(issueText[startIndex:endIndex], lineNumber, fileName, label)
+	return Issue(title, issueText[startIndex:endIndex], lineNumber, fileName, label)
 
 #returns the list of issues in a specific directory (and all children), or "." by default
 def getIssueList(dir = "."):
@@ -103,7 +109,7 @@ def getIssueList(dir = "."):
 
 	print "\n\n\n\n ISSUES TO BE ADDED TO THE REPO:"
 	for issue in issueList:
-		print issue.issue, " in file: ", issue.fileName, "on line: ", issue.line, " with label: ", issue.label
+		print issue.title, "\n", issue.issue, "in \n", issue.fileName, "on line ", issue.line, "with label(s): ", issue.label, "\n\n"
 
 
 	return issueList

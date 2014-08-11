@@ -35,13 +35,12 @@ def getValue(key):
 		for line in f:
 			if key in line:
 				return line.split(" ", 1)[1].strip(" \n")
-
 	return None
 		
 def addProperty(key, value):
 	with open(SETTINGS, "a") as sett:
 		sett.write(key + " " + value + "\n")
-		return False
+		return True
 
 	return False #something bad happened
 
