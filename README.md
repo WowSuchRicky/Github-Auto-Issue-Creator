@@ -14,3 +14,5 @@ Searches through all current files and subfolders for these lines, and creates a
 Simply copy (autoissue.py and github.py) and run the tool (python autoissue.py) in the directory with your code/github repo, and it'll do all of the work for you, after prompting you for your Github Credentials (which will request a token that will be saved, so you shouldn't have to enter your info more than once).
 
 Feel free to submit pull requests/issues/etc. or contact us.
+
+Unless specified otherwise, the MIT License (http://opensource.org/licenses/MIT) applies to all of this code. By executing or even downloading the source code, you're agreeing to comply with all MIT license specifics. 
