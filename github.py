@@ -1,6 +1,7 @@
 import requests
 import json
 import getpass
+import os
 from urlparse import urljoin
 
 
@@ -31,6 +32,8 @@ def getToken():
 		return token
 
 def getValue(key):
+	if not os.path.exists(SETTINGS):
+		open(SETTINGS, 'a').close()
 	with open(SETTINGS) as f:
 		for line in f:
 			if key in line:
