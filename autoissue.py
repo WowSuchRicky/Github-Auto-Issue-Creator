@@ -83,9 +83,10 @@ def generateIssue(issueText, lineNumber, fileName):
 			if arg in token:
 				if arg is "@title":
 					title = token.split(":")[1]
+					print "arg found! ", arg, ": ", title
 				else:
 					label = token.split(":")[1]
-				print "arg found! ", arg, ": ", label
+					print "arg found! ", arg, ": ", label
 
 
 	startIndex = issueText.index("TODO") + 6 #+6 is to account for "TODO: "
