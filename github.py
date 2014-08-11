@@ -105,3 +105,26 @@ def createIssue(issue):
 		print "Not OK"
 		print r.text
 		print "{}:{}".format("Status", r.status_code)
+
+
+
+def getIssueNumberList():
+
+	list = []
+
+	url = urljoin(API_URL, "/".join(["repos", getOwner(), getRepo(), "issues"]))
+	url = url + "?access_token=" + getToken()
+
+	r = requests.get(url)
+
+	if r.ok:
+		j = json.loads(r.text or r.content)
+		for issue in j:
+			list.append(issue['number'])
+		return list
+	#TODO: error handling
+	else:
+		print "Not OK"
+		print r.text
+		print "{}:{}".format("Status", r.status_code)
+		return None
