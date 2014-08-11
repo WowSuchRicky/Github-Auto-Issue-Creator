@@ -20,8 +20,9 @@ def getToken():
 	password = getpass.getpass('Github password: ')
 
 	url = urljoin(API_URL, 'authorizations')
-	payload = {'note' : 'auto-issue-creator'}
+	payload = {'note' : 'auto-issue-creator', 'scopes' : ['repo']}
 	r = requests.post(url, auth = (username, password), data = json.dumps(payload),)
+
 
 	# TODO error handling
 
@@ -110,7 +111,6 @@ def createIssue(issue):
 
 
 def getIssueNumberList():
-
 	list = []
 
 	url = urljoin(API_URL, "/".join(["repos", getOwner(), getRepo(), "issues"]))
