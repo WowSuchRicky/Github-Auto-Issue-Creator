@@ -2,19 +2,21 @@ import requests
 import json
 import getpass
 import os
+import util
+from autoissue import injectNumber
 from urlparse import urljoin
 
 
 API_URL = 'https://api.github.com'
-SETTINGS = "settings.williames" #settings file
-
+SETTINGS = 'settings.williames' #settings file
 HEADERS = {'Content-type':'application/json'}
+TOKEN_KEY = 'auth_token'
 
 def getToken():
-	val = getValue("auth_token")
+	val = getValue(TOKEN_KEY)
 	if val is not None:
 		return val
-	
+
 	#generate a token
 	username = raw_input('Github username: ')
 	password = getpass.getpass('Github password: ')
@@ -28,37 +30,39 @@ def getToken():
 
 	if r.ok:
 		token = json.loads(r.text or r.content)['token']
-		if not addProperty('auth_token', token):
+		if not addProperty(TOKEN_KEY, token):
 			print "Could not write authorization token to settings file. Please add the following line to " + SETTINGS + ":\n" + "auth_token " + token
 		return token
 
 def getValue(key):
-	if not os.path.exists(SETTINGS):
-		open(SETTINGS, 'a').close()
-	with open(SETTINGS) as f:
-		for line in f:
-			if key in line:
-				return line.split(" ", 1)[1].strip(" \n")
+	if os.path.exists(SETTINGS):
+		with open(SETTINGS) as f:
+			for line in f:
+				if key in line:
+					return line.split(" ", 1)[1].strip(" \n")
 	return None
-		
+
 def addProperty(key, value):
-	with open(SETTINGS, "a+") as sett:
+	with open(SETTINGS, "a+") as sett: # Will create the file if it does not exist
 		sett.write(key + " " + value + "\n")
 		return True
 
-	return False #something bad happened
+	return False
 
 
 def getRepo():
 	val = getValue("repo")
-	if val is not None:
-		return val
 
+	if val is not None:
+		return val # return the repo saved in the settings file
+
+	# Get the active git repo
 	with open('.git/config') as f:
 		for line in f:
 			if "url = " in line:
 				r = line.split("=")[1].split("github.com/")[1].split("/")[1].replace(".git\n", "")
-	
+
+	# Add to our settings file
 	if r:
 		addProperty("repo", r)
 		return r
@@ -66,36 +70,54 @@ def getRepo():
 def getOwner():
 	val = getValue("owner")
 	if val is not None:
-		return val
+		return val # return the owner saved in the settings file
 
+
+	# Get the active git repo
 	with open('.git/config') as f:
 		for line in f:
 			if "url = " in line:
 				r = line.split("=")[1].split("github.com/")[1].split("/")[0]
 
+	# Add to our settings file
 	if r:
 		addProperty("owner", r)
 		return r
 
 
-def createIssues(issues):
-	for issue in issues:
-		createIssue(issue)
+def createIssues(issues, debug = False):
+	beforeIssues = getIssueNumberList()
+	afterIssues = []
+
+	if debug:
+		print "Debug mode on. Not actually creating issues in repo"
+	else:
+		for issue in issues:
+			if issue.issue_num is not None:
+				afterIssues.append(issue.issue_num)
+			else:
+				number = createIssue(issue)
+				# inject issue number tag into TODO comment
+				injectNumber(issue, number)
+
+		util.debug_print("before issues:\n", str(beforeIssues), "\nafter issues:\n", str(afterIssues))
+		removeIssuesInDiff(beforeIssues, afterIssues)
+
 
 def createIssue(issue):
 	print "CREATING ISSUE: ", issue.issue, " in file: ", issue.fileName, " on line: ", issue.line, " with label: ", issue.label
 
-	if issue.label is None:
-		labels = []
-	else:
-		labels = [issue.label]
-	
-	data = {"title" : "{} : {}".format(issue.fileName, issue.line), "body" : issue.issue, "assignee" : "tylermuch", "milestone" : None, "state" : "open", "labels" : labels}
-	
+	title = "*AutoIssue* " + issue.title
+	body = issue.issue
+	assignee = getOwner()
+	labels = [] if issue.label is None else issue.label
+
+	data = {"title" : title, "body" : body, "state" : "open", "labels" : labels}
+
 	url = urljoin(API_URL, "/".join(["repos", getOwner(), getRepo(), "issues"]))
 	url = url + "?access_token=" + getToken()
 
-	print "url = " + url
+	util.debug_print("Issue create request url =", url)
 
 	r = requests.post(url, data = json.dumps(data), headers = HEADERS)
 
@@ -121,7 +143,8 @@ def getIssueNumberList():
 	if r.ok:
 		j = json.loads(r.text or r.content)
 		for issue in j:
-			list.append(issue['number'])
+			if "*AutoIssue*" in issue['title']:
+				list.append(issue['number'])
 		return list
 	#TODO: error handling
 	else:
@@ -129,3 +152,19 @@ def getIssueNumberList():
 		print r.text
 		print "{}:{}".format("Status", r.status_code)
 		return None
+
+def removeIssuesInDiff(beforeIssues, afterIssues):
+	def diff(a, b):
+		b = set(b)
+		return [aa for aa in a if aa not in b]
+
+	data = {"state" : "closed"}
+
+	for issue in diff(beforeIssues, afterIssues):
+		url = urljoin(API_URL, "/".join(["repos", getOwner(), getRepo(), "issues", str(issue)]))
+		url = url + "?access_token=" + getToken()
+		r = requests.post(url, data = json.dumps(data), headers = HEADERS)
+		if r.ok:
+			print "Closed issue", issue
+
+print getIssueNumberList()
