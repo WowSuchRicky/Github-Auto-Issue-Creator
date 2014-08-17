@@ -25,14 +25,15 @@ def getToken():
 	payload = {'note' : 'auto-issue-creator', 'scopes' : ['repo']}
 	r = requests.post(url, auth = (username, password), data = json.dumps(payload),)
 
-
-	# TODO error handling
-
-	if r.ok:
+	if r.status_code is requests.codes['created']:
 		token = json.loads(r.text or r.content)['token']
 		if not addProperty(TOKEN_KEY, token):
 			print "Could not write authorization token to settings file. Please add the following line to " + SETTINGS + ":\n" + "auth_token " + token
 		return token
+	else:
+		print "Failed to generate a new authorization token"
+		print r.text
+		return None
 
 def getValue(key):
 	if os.path.exists(SETTINGS):
@@ -121,14 +122,14 @@ def createIssue(issue):
 
 	r = requests.post(url, data = json.dumps(data), headers = HEADERS)
 
-	if r.ok:
-		print "SUCCESS"
+	if r.status_code is requests.codes['created']:
 		j = json.loads(r.text or r.content)
+		print "Successfully created issue", j['number']
 		return j['number']
 	else:
-		print "Not OK"
-		print r.text
+		print "Something went wrong while attempting to create the issue on Github"
 		print "{}:{}".format("Status", r.status_code)
+		print r.text
 
 
 
@@ -146,11 +147,10 @@ def getIssueNumberList():
 			if "*AutoIssue*" in issue['title']:
 				list.append(issue['number'])
 		return list
-	#TODO: error handling
 	else:
-		print "Not OK"
-		print r.text
+		print "Something went wrong while getting the list of existing issues in the repository."
 		print "{}:{}".format("Status", r.status_code)
+		print r.text
 		return None
 
 def removeIssuesInDiff(beforeIssues, afterIssues):
@@ -166,5 +166,6 @@ def removeIssuesInDiff(beforeIssues, afterIssues):
 		r = requests.post(url, data = json.dumps(data), headers = HEADERS)
 		if r.ok:
 			print "Closed issue", issue
-
-print getIssueNumberList()
+		else:
+			print "Failed to close issue", issue
+			print r.text
