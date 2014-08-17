@@ -47,8 +47,6 @@ def getWhitelistRegex():
 		if os.path.isdir(entry):
 			entry += "/*"
 		whitelist.append(entry.replace("*", "(.*)"))
-
-	#whitelist = [entry.strip().replace("*", "(.*)") for entry in whitelist]
 	return whitelist
 
 #Function that gets all of the whitelisted files (and folders) in a folder
@@ -60,7 +58,6 @@ def getFiles(directory = "."):
 			relFile = os.path.join(relDir if relDir is not "." else "", fileName)
 			if any([re.match(pattern + "$", relFile) is not None for pattern in getWhitelistRegex()]):
 				fileList.append(relFile)
-		#for dir in dirs:
 
 
 	return fileList
@@ -137,7 +134,6 @@ def parseIssueFromRawComment(comment, line, file):
 			inum = int(tag) # Should eventually check to be sure there are only numbers in here
 		else:
 			t, v = tag.split(":")
-			#print "TAG:", t, "VALUE:", v
 			if t.lower() == "title":
 				title = v
 			elif t.lower() == "label":
@@ -159,9 +155,7 @@ def injectNumber(issue, number):
 	lineNumber = issue.line - 1
 	line = data[lineNumber]
 	startIndex = line.index(startToken) + len(startToken)
-	#print "Before:\n", data[lineNumber]
 	data[lineNumber] = data[lineNumber][:startIndex] + " [" + str(number) + "] " + data[lineNumber][startIndex:]
-	#print "After:\n", data[lineNumber]
 
 	with open(issue.fileName, 'w') as file:
 		file.writelines(data)
@@ -195,6 +189,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-	#print getFilesWhitelist(".")
-	#print getWhitelistRegex()
-	#print blacklistToRegex()
