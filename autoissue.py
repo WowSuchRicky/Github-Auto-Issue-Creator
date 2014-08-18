@@ -1,12 +1,9 @@
 #!/usr/bin/python
 #from os import listdir, path
-import os, argparse, re, errno
+import os, argparse, re, errno, globals
 from util import debug_print
 
-#global vars
-blacklist = [".git", "autoissue.py*", "github.py*", "README.md", "util.py*", "settings.williames", ".gitignore", "setup", "*.DS_Store", "test/parsingtests", "test.py*"] #blacklist for file/dir names (added .DS_Store because super annoying)
-startToken = "TODO"
-endToken = "ODOT"
+basePath = ""
 
 #issue class, just has the content and lineNumber fields right now.
 class Issue:
@@ -44,21 +41,28 @@ def getWhitelistRegex():
 	whitelist = []
 
 	for entry in whitelistinfile:
-		if os.path.isdir(entry):
+		e = os.path.join(basePath, entry)
+		if os.path.isdir(e):
 			entry += "/*"
 		whitelist.append(entry.replace("*", "(.*)"))
 	return whitelist
 
 #Function that gets all of the whitelisted files (and folders) in a folder
-def getFiles(directory = "."):
+def getFiles():
 	fileList = []
-	for root, dirs, files in os.walk(directory):
-		for fileName in files:
-			relDir = os.path.relpath(root, directory)
-			relFile = os.path.join(relDir if relDir is not "." else "", fileName)
-			if any([re.match(pattern + "$", relFile) is not None for pattern in getWhitelistRegex()]):
-				fileList.append(relFile)
 
+	for root, dirs, files in os.walk(basePath):
+		for fileName in files:
+			relDir = os.path.relpath(root, basePath)
+			relFile = os.path.join(relDir, fileName)
+			print "RELFILE:", relFile
+			if any([re.match(pattern + "$", relFile) is not None for pattern in getWhitelistRegex()]):
+				fileList.append(os.path.join(basePath, relFile))
+				#print "##################"
+				#print "ROOT", root
+				#print "FILENAME:", fileName
+				#print "JOINED PATH:", os.path.join(basePath, relFile)
+				#print "##################"
 
 	return fileList
 
@@ -82,7 +86,7 @@ def findIssuesInFile(file):
 
 	while lineNumber < len(data):
 		issueString = ""
-		if startToken in data[lineNumber]:
+		if globals.startToken in data[lineNumber]:
 			# TODO: change to check if // comes just before startToken. This will cover the case where the comment comes after code in the line. Also, handle this case.
 			if data[lineNumber].strip().startswith("//"):
 				startingLine = lineNumber
@@ -152,10 +156,12 @@ def injectNumber(issue, number):
 	with open(issue.fileName, 'r') as file:
 		data = file.readlines()
 
+	print "Starttoken:", globals.startToken
+
 	lineNumber = issue.line - 1
 	line = data[lineNumber]
-	startIndex = line.index(startToken) + len(startToken)
-	data[lineNumber] = data[lineNumber][:startIndex] + " [" + str(number) + "] " + data[lineNumber][startIndex:]
+	startIndex = line.index(globals.startToken) + len(globals.startToken)
+	data[lineNumber] = line[:startIndex] + " [" + str(number) + "] " + line[startIndex:]
 
 	with open(issue.fileName, 'w') as file:
 		file.writelines(data)
@@ -163,17 +169,15 @@ def injectNumber(issue, number):
 def main():
 	from github import createIssues
 	parser = argparse.ArgumentParser(description="Auto-Issue-Creator argument parser")
-	parser.add_argument("-s", "--start", help="the token that begins the TODO: (ie. 'TODO')")
+	parser.add_argument("-s", "--start", help="the token that begins the TODO: (ie. 'TODO')", default="TODO")
 	parser.add_argument("-d", "--debug", action='store_true', help="enable debug mode (no POSTing to github)")
+	parser.add_argument("-p", "--path", help="the base path of the project to be scanned", default=".")
+
+	globals.init()
 
 	args = vars(parser.parse_args())
-
-	if args["start"] != None:
-		global startToken #set scope
-		startToken = args["start"]
-		print "Starting token set as: ", startToken
-	else:
-		print "Using default starting token: ", startToken
+	globals.startToken = args["start"]
+	print "Using start token:", globals.startToken
 
 	#see if we're in debug mode
 	if args["debug"]:
@@ -182,7 +186,12 @@ def main():
 	else:
 		debug = False
 
+	global basePath
+	basePath = os.path.abspath(os.path.expanduser(args['path']))
+	print "Base path of project:", basePath
+
 	issueList = getIssues()
+	print "Found {} {}:".format(len(issueList), "issue" if len(issueList) is 1 else "issues")
 	for issue in issueList:
 		print issue
 	createIssues(issueList, debug)
