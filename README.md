@@ -9,7 +9,7 @@ This seems to work fine on Unix-based OSs (Linux, OS X, etc..) however, not quit
 2. Run `C:\Python27\Scripts\pip.exe install requests`
 3. It should now work fine! Feel free to proceed to the rest of the instructions.
 
-Simply copy (autoissue.py, github.py, and util.py) and run the tool (`python autoissue.py`) in the directory with your code/github repo, and it'll do all of the work for you, after prompting you for your Github credentials (which will request a token that will be saved, so you shouldn't have to enter your info more than once).
+Simply copy (autoissue.py, github.py, and util.py) and run the tool (`python autoissue.py`) with the -p <path> flag; <path> being the directory with your code/git repo, and it'll do all of the work for you, after prompting you for your Github credentials (which will request a token that will be saved, so you shouldn't have to enter your info more than once).
 
 *NOTE: We added a -p <path> option now to set the path that you'd like to scan files for. We haven't tested it across operating systems, so let us know how it works!*
 
