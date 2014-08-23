@@ -11,6 +11,8 @@ This seems to work fine on Unix-based OSs (Linux, OS X, etc..) however, not quit
 
 Simply copy (autoissue.py, github.py, and util.py) and run the tool (`python autoissue.py`) in the directory with your code/github repo, and it'll do all of the work for you, after prompting you for your Github credentials (which will request a token that will be saved, so you shouldn't have to enter your info more than once).
 
+*NOTE: We added a -p <path> option now to set the path that you'd like to scan files for. We haven't tested it across operating systems, so let us know how it works!*
+
 Feel free to submit pull requests/issues/etc. or contact us.
 
 *THIS IS THE EXPERIMENTAL VERSION! THIS COULD WORK GREAT, OR NOT WORK AT ALL.*
