@@ -4,7 +4,7 @@ import getpass
 import os
 import util
 from autoissue import injectNumber
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 
 API_URL = 'https://api.github.com'
