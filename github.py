@@ -28,11 +28,11 @@ def getToken():
 	if r.status_code is requests.codes['created']:
 		token = json.loads(r.text or r.content)['token']
 		if not addProperty(TOKEN_KEY, token):
-			print "Could not write authorization token to settings file. Please add the following line to " + SETTINGS + ":\n" + "auth_token " + token
+			print("Could not write authorization token to settings file. Please add the following line to " + SETTINGS + ":\n" + "auth_token " + token)
 		return token
 	else:
-		print "Failed to generate a new authorization token"
-		print r.text
+		print("Failed to generate a new authorization token")
+		print(r.text)
 		return None
 
 def getValue(key):
@@ -91,7 +91,7 @@ def createIssues(issues, debug = False):
 	afterIssues = []
 
 	if debug:
-		print "Debug mode on. Not actually creating issues in repo"
+		print("Debug mode on. Not actually creating issues in repo")
 	else:
 		for issue in issues:
 			if issue.issue_num is not None:
@@ -106,7 +106,7 @@ def createIssues(issues, debug = False):
 
 
 def createIssue(issue):
-	print "CREATING ISSUE: ", issue.issue, " in file: ", issue.fileName, " on line: ", issue.line, " with label: ", issue.label
+	print("CREATING ISSUE: ", issue.issue, " in file: ", issue.fileName, " on line: ", issue.line, " with label: ", issue.label)
 
 	title = "*AutoIssue* " + issue.title
 	body = issue.issue
@@ -124,12 +124,12 @@ def createIssue(issue):
 
 	if r.status_code is requests.codes['created']:
 		j = json.loads(r.text or r.content)
-		print "Successfully created issue", j['number']
+		print("Successfully created issue", j['number'])
 		return j['number']
 	else:
-		print "Something went wrong while attempting to create the issue on Github"
-		print "{}:{}".format("Status", r.status_code)
-		print r.text
+		print("Something went wrong while attempting to create the issue on Github")
+		print("{}:{}".format("Status", r.status_code))
+		print(r.text)
 
 
 
@@ -148,9 +148,9 @@ def getIssueNumberList():
 				list.append(issue['number'])
 		return list
 	else:
-		print "Something went wrong while getting the list of existing issues in the repository."
-		print "{}:{}".format("Status", r.status_code)
-		print r.text
+		print("Something went wrong while getting the list of existing issues in the repository.")
+		print("{}:{}".format("Status", r.status_code))
+		print(r.text)
 		return None
 
 def removeIssuesInDiff(beforeIssues, afterIssues):
@@ -165,7 +165,7 @@ def removeIssuesInDiff(beforeIssues, afterIssues):
 		url = url + "?access_token=" + getToken()
 		r = requests.post(url, data = json.dumps(data), headers = HEADERS)
 		if r.ok:
-			print "Closed issue", issue
+			print("Closed issue", issue)
 		else:
-			print "Failed to close issue", issue
-			print r.text
+			print("Failed to close issue", issue)
+			print(r.text)

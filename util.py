@@ -7,4 +7,4 @@ def debug_print(*arg):
 			string = string + " " + a
 		string = string.strip()
 
-		print string
+		print(string)
