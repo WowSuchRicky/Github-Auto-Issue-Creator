@@ -18,7 +18,7 @@ def getToken():
 		return val
 
 	#generate a token
-	username = raw_input('Github username: ')
+	username = input('Github username: ')
 	password = getpass.getpass('Github password: ')
 
 	url = urljoin(API_URL, 'authorizations')
