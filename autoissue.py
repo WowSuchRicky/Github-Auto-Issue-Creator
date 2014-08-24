@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #from os import listdir, path
 import os, argparse, re, errno, globals
 from util import debug_print
@@ -34,9 +34,9 @@ def getWhitelistRegex():
 		try:
 			with open("autoissue.whitelist") as file:
 				whitelistinfile = [item.strip() for item in file.readlines()]
-		except IOError as (eno, strerror):
-			if eno == errno.ENOENT:
-				open("autoissue.whitelist", "w")
+                #NOTE: Was throwing FileNotFoundError not IOERROR
+		except FileNotFoundError as errno:
+                        open("autoissue.whitelist", "w")
 
 	whitelist = []
 
@@ -55,7 +55,7 @@ def getFiles():
 		for fileName in files:
 			relDir = os.path.relpath(root, basePath)
 			relFile = os.path.join(relDir, fileName)
-			print "RELFILE:", relFile
+			print("RELFILE:", relFile)
 			if any([re.match(pattern + "$", relFile) is not None for pattern in getWhitelistRegex()]):
 				fileList.append(os.path.join(basePath, relFile))
 				#print "##################"
@@ -156,7 +156,7 @@ def injectNumber(issue, number):
 	with open(issue.fileName, 'r') as file:
 		data = file.readlines()
 
-	print "Starttoken:", globals.startToken
+	print("Starttoken:", globals.startToken)
 
 	lineNumber = issue.line - 1
 	line = data[lineNumber]
@@ -177,23 +177,23 @@ def main():
 
 	args = vars(parser.parse_args())
 	globals.startToken = args["start"]
-	print "Using start token:", globals.startToken
+	print("Using start token:", globals.startToken)
 
 	#see if we're in debug mode
 	if args["debug"]:
 		debug = True
-		print "Debug mode enabled"
+		print("Debug mode enabled")
 	else:
 		debug = False
 
 	global basePath
 	basePath = os.path.abspath(os.path.expanduser(args['path']))
-	print "Base path of project:", basePath
+	print("Base path of project:", basePath)
 
 	issueList = getIssues()
-	print "Found {} {}:".format(len(issueList), "issue" if len(issueList) is 1 else "issues")
+	print("Found {} {}:".format(len(issueList), "issue" if len(issueList) is 1 else "issues"))
 	for issue in issueList:
-		print issue
+		print(issue)
 	createIssues(issueList, debug)
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ def getExpected(file, t, l, i):
 	if i:
 		issue = 55
 	if debug:
-		print "title:", "YES," if t else "NO,", "label:", "YES," if l else "NO,", "issue:", "YES" if i else "NO"
+		print("title:", "YES," if t else "NO,", "label:", "YES," if l else "NO,", "issue:", "YES" if i else "NO")
 	return Issue(title, "This is a test", 0, file, label, issue)
 
 def getIssueFromFile(file):
