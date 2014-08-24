@@ -34,10 +34,9 @@ def getWhitelistRegex():
 		try:
 			with open("autoissue.whitelist") as file:
 				whitelistinfile = [item.strip() for item in file.readlines()]
-                #NOTE: strerror was not being used, and except was throwing SyntaxError in python3
-		except IOError as eno:
-			if eno == errno.ENOENT:
-				open("autoissue.whitelist", "w")
+                #NOTE: Was throwing FileNotFoundError not IOERROR
+		except FileNotFoundError as errno:
+                        open("autoissue.whitelist", "w")
 
 	whitelist = []
 
