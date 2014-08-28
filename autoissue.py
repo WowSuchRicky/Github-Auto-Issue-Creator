@@ -8,14 +8,14 @@ version = 1.0
 
 #issue class, just has the content and lineNumber fields right now.
 class Issue:
-	def __init__(self, title, issueContent, lineNumber, fileName, label, inum):
+	def __init__(self, title, issueContent, lineNumber, fileName, label, issuenum):
 		self.data = {}
 		self.title = title
 		self.issue = issueContent
 		self.line = lineNumber
 		self.fileName = fileName
 		self.label = label
-		self.issue_num = inum
+		self.issue_num = issuenum
 
 	def __str__(self):
 		return "Issue: {}\n\tIssue#: {}\n\tFile: {}\n\tLine: {}\n\tLabels: {}\n\tContent: {}\n".format(self.title, self.issue_num, self.fileName, self.line, self.label, self.issue)
@@ -132,7 +132,7 @@ def parseIssueFromRawComment(comment, line, file):
 	r = re.compile(tags_regex)
 	tags = r.findall(comment)
 
-	# If no [title:] tag is specified, then the first line is autmatically the title
+	# If no [title:] tag is specified, then the first line is automatically the title
 	for tag in tags:
 		if ":" not in tag:
 			# This is the issue number tag
