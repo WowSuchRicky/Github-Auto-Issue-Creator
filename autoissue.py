@@ -123,11 +123,11 @@ def findIssuesInFile(file):
 
 
 # returns an Issue
-def parseIssueFromRawComment(comment, line, file):
+def parseIssueFromRawComment(comment, line, srcfile):
 	data = {}
 	title = None
 	labels = []
-	inum = None
+	issuenum = None
 	tags_regex = "\[(.*?)\]"
 	r = re.compile(tags_regex)
 	tags = r.findall(comment)
@@ -136,7 +136,7 @@ def parseIssueFromRawComment(comment, line, file):
 	for tag in tags:
 		if ":" not in tag:
 			# This is the issue number tag
-			inum = int(tag) # Should eventually check to be sure there are only numbers in here
+			issuenum = int(tag) # Should eventually check to be sure there are only numbers in here
 		else:
 			t, v = tag.split(":")
 			if t.lower() == "title":
@@ -149,7 +149,7 @@ def parseIssueFromRawComment(comment, line, file):
 
 	content = re.sub(tags_regex, "", comment)
 	content = re.sub("(//(\s*)TODO)|(/\*(\s*)TODO)|(\*/)", "", content).strip()
-	issue = Issue(title, content, line + 1, file, labels, inum)
+	issue = Issue(title, content, line + 1, srcfile, labels, issuenum)
 	issue.data = data
 	return issue
 
