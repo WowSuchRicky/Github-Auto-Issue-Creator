@@ -4,6 +4,7 @@ import os, argparse, re, errno, globals
 from util import debug_print
 
 basePath = ""
+version = 1.0
 
 #issue class, just has the content and lineNumber fields right now.
 class Issue:
@@ -182,7 +183,7 @@ def main():
 	#see if we're in debug mode
 	if args["debug"]:
 		debug = True
-		print "Debug mode enabled"
+		print "Debug mode enabled. Version: ", version
 	else:
 		debug = False
 

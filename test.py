@@ -33,7 +33,9 @@ def getIssueFromFile(file):
 class TestCommentParsing(unittest.TestCase):
 
 	def testFiles(self):
-		files = getFiles("test/parsingtests/comment_parse/inputs")
+		import autoissue
+		autoissue.basePath = "test/parsingtests/comment_parse/inputs" #change basepath to unit test path
+		files = getFiles()
 		for file in files:
 			numFound = len(findIssuesInFile(file))
 			with open(file.replace("input", "output")) as f:

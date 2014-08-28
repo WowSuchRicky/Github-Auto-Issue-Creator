@@ -134,7 +134,7 @@ def createIssue(issue):
 
 
 def getIssueNumberList():
-	list = []
+	issueList = []
 
 	url = urljoin(API_URL, "/".join(["repos", getOwner(), getRepo(), "issues"]))
 	url = url + "?access_token=" + getToken()
@@ -145,8 +145,8 @@ def getIssueNumberList():
 		j = json.loads(r.text or r.content)
 		for issue in j:
 			if "*AutoIssue*" in issue['title']:
-				list.append(issue['number'])
-		return list
+				issueList.append(issue['number'])
+		return issueList
 	else:
 		print "Something went wrong while getting the list of existing issues in the repository."
 		print "{}:{}".format("Status", r.status_code)
