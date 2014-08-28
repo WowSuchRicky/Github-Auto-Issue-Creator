@@ -14,13 +14,13 @@ Simply copy (autoissue.py, github.py, and util.py) and run the tool (`python aut
 ## Command line arguments
 ```
 Usage: python ./autoissue.py [FLAGS]
-
    -d --debug : debug mode; issues will not actually be pushed/synced, this is mainly for development/testing.
    (SOON!) -i --interactive : show a list of issues first, and/or prompt one at a time before adding them to GitHub, BitBucket, etc.
    -p --path path : specify the path to the git repo you'd like to work with
    -s --start startToken : specify the token that will be used to parse for todos (Default: 'TODO')
-
-Feel free to submit pull requests/issues/etc. or contact us.
+```
 
 *THIS IS THE EXPERIMENTAL BRANCH! THIS COULD WORK GREAT, OR NOT WORK AT ALL.*
 Unless specified otherwise, the MIT License ([link](http://opensource.org/licenses/MIT)) applies to all of this code. By executing or even downloading the source code, you're agreeing to comply with all MIT license specifics. 
+
+Feel free to submit pull requests/issues/etc. or contact us.
