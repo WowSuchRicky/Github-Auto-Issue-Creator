@@ -172,7 +172,7 @@ def main():
 	parser.add_argument("-s", "--start", help="the token that begins the TODO: (ie. 'TODO')", default="TODO")
 	parser.add_argument("-d", "--debug", action='store_true', help="enable debug mode (no POSTing to github)")
 	parser.add_argument("-p", "--path", help="the base path of the project to be scanned", default=".")
-
+	parser.add_argument("-i", "--interactive", action='store_true', help="enable interactive mode (pick and choose which issues get POSTed to github)")
 	globals.init()
 
 	args = vars(parser.parse_args())
@@ -192,8 +192,15 @@ def main():
 
 	issueList = getIssues()
 	print "Found {} {}:".format(len(issueList), "issue" if len(issueList) is 1 else "issues")
-	for issue in issueList:
+
+	for issue in list(issueList):
 		print issue
+		if args["interactive"]:
+			post = raw_input('Create this issue in github? (y/n) ')
+			if post.lower() == 'n' or post.lower() == 'no':
+				issueList.remove(issue)
+
+	print "Creating {} issues".format(len(issueList))
 	createIssues(issueList, debug)
 
 if __name__ == "__main__":
