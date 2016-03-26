@@ -1,7 +1,7 @@
 ####About
 If you have lines of code in your program that have a portion such as: "//TODO: Fix this part" and want to keep track of these, this is your tool! It searches through all current files and subfolders for these lines, and creates an issue in the respective Github repo automatically. 
 
-This seems to work fine on Unix-based OSs (Linux, OS X, etc..) however, not quite on Windows.
+This seems to work fine on Unix-based OSs (Linux, OS X, etc..) however, not quite on Windows. You need Python 2, however, instead of 3, for this to work properly. 
 
 ####Extra steps to install/run on Windows:
 0. Download Python 2.7 from [here](https://www.python.org/downloads/)
