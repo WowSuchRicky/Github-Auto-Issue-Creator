@@ -4,7 +4,7 @@ If you have lines of code in your program that have a portion such as: "//TODO: 
 This seems to work fine on Unix-based OSs (Linux, OS X, etc..) however, not quite on Windows.
 
 ####Extra steps to install/run on Windows:
-0. Download Python 2.7 from [here](https://www.python.org/downloads/)
+0. Download Python 3.x from [here](https://www.python.org/downloads/)
 1. Download pip (we've included a copy in `/setup` if you'd like, but we still recommend downloading the latest [here](https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py) and run it (`python get-pip.py`)
 2. Run `C:\Python27\Scripts\pip.exe install requests`
 3. It should now work fine! Feel free to proceed to the rest of the instructions.
