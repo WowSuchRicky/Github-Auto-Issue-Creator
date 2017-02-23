@@ -64,7 +64,10 @@ def getRepo():
 			if "[remote \"origin\"]" in line: 
 				origin = True
 			if "url = " in line and origin:
-				r = line.split("=")[1].split("github.com/")[1].split("/")[1].replace(".git\n", "")
+				if "git@github.com" in line:
+					r = line.split("=")[1].split("github.com:")[1].split("/")[1].replace(".git\n", "")
+				else:
+					r = line.split("=")[1].split("github.com/")[1].split("/")[1].replace(".git\n", "")
 				origin = False
 
 	# Add to our settings file
@@ -85,7 +88,10 @@ def getOwner():
 			if "[remote \"origin\"]" in line: 
 				origin = True
 			if "url = " in line and origin:
-				r = line.split("=")[1].split("github.com/")[1].split("/")[0]
+				if "git@github.com" in line:
+					r = line.split("=")[1].split("github.com:")[1].split("/")[0]
+				else:
+					r = line.split("=")[1].split("github.com/")[1].split("/")[0]
 				origin = False
 
 	# Add to our settings file
