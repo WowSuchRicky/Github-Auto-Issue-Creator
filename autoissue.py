@@ -166,8 +166,33 @@ def injectNumber(issue, number):
 	with open(issue.fileName, 'w') as file:
 		file.writelines(data)
 
+def identifyOrigin():
+	from settings import getValue, addProperty
+	val = getValue("provider")
+	if val is not None:
+		return val
+	
+	origin = False
+	with open('.git/config') as f:
+		for line in f:
+			if "[remote \"origin\"]" in line: 
+				origin = True
+			if "url = " in line and origin:
+				if "github.com" in line:
+					r = "github"
+				# elif "bitbucket" in line:
+				# 	r = "bitbucket"
+				origin = False
+
+	# Add to our settings file
+	if r:
+		addProperty("provider", r)
+		return r
+	else:
+		print("Unknown origin host")
+
+
 def main():
-	from github import createIssues
 	parser = argparse.ArgumentParser(description="Auto-Issue-Creator argument parser")
 	parser.add_argument("-s", "--start", help="the token that begins the TODO: (ie. 'TODO')", default="TODO")
 	parser.add_argument("-d", "--debug", action='store_true', help="enable debug mode (no POSTing to github)")
@@ -190,18 +215,25 @@ def main():
 	basePath = os.path.abspath(os.path.expanduser(args['path']))
 	print "Base path of project:", basePath
 
+	provider = identifyOrigin()
+	
 	issueList = getIssues()
 	print "Found {} {}:".format(len(issueList), "issue" if len(issueList) is 1 else "issues")
 
 	for issue in list(issueList):
 		print issue
 		if args["interactive"]:
-			post = raw_input('Create this issue in github? (y/n) ')
+			post = raw_input('Create this issue in {provider}? (y/n) '.format(provider=provider))
 			if post.lower() == 'n' or post.lower() == 'no':
 				issueList.remove(issue)
 
 	print "Creating {} issues".format(len(issueList))
-	createIssues(issueList, debug)
+	
+	if (provider == "github"):
+		import github
+		github.createIssues(issueList, debug)
+	#elif provider == "bitbucket":
+	#	 print("Please implement me")
 
 if __name__ == "__main__":
     main()

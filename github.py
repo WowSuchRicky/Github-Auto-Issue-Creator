@@ -5,10 +5,9 @@ import os
 import util
 from autoissue import injectNumber
 from urlparse import urljoin
-
+from settings import addProperty, getValue, SETTINGS
 
 API_URL = 'https://api.github.com'
-SETTINGS = 'settings.williames' #settings file
 HEADERS = {'Content-type':'application/json'}
 TOKEN_KEY = 'auth_token'
 
@@ -34,22 +33,6 @@ def getToken():
 		print "Failed to generate a new authorization token"
 		print r.text
 		return None
-
-def getValue(key):
-	if os.path.exists(SETTINGS):
-		with open(SETTINGS) as f:
-			for line in f:
-				if key in line:
-					return line.split(" ", 1)[1].strip(" \n")
-	return None
-
-def addProperty(key, value):
-	with open(SETTINGS, "a+") as sett: # Will create the file if it does not exist
-		sett.write(key + " " + value + "\n")
-		return True
-
-	return False
-
 
 def getRepo():
 	val = getValue("repo")
